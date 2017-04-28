@@ -17,8 +17,17 @@ Things aren't entirely magical in the world of web applications. Developers are 
 An ideal scenario would entail the flexibility and accessibility of web technology, the cross-platform flexibility of browsers, and the native experience and features of a desktop application. All this would be wrapped into a simple executible. All the advantages from both worlds, with non of the disadvantages, barriers, and limitations!
 
 ## Electron Framework
+
+![Electron Logo](https://camo.githubusercontent.com/11e7cfd04eceb1ea7464e99edda0e7000487f343/68747470733a2f2f656c656374726f6e2e61746f6d2e696f2f696d616765732f656c656374726f6e2d6c6f676f2e737667)
+
 The Electron framework allows us to create cross-platform native applications that rely on web technology, HTML, CSS and JavaScript. Electron provides a robust set of JavaScript APIs that interface with various operating systems and their particular nuances. It uses web pages to create user interfaces, just like a web application.
 
 You can look at it as a simplified, watered-down browser capable of interacting with the native operating system. This 'browser' becomes part of your application's packaging and is distributed to whoever installs it. You code it once, and create distributions for Windows, Mac OSX, and Linux in one go.
 
 Electron also allows you to focus on building your application and what it does, rather than how it does it. When calling functions that interact with the operating system, you can be confident knowing that Electron handles the OS specifics itself, allowing you to speed on ahead instead of worrying about the differences between each operating system's requirements.
+
+Electron includes Chromium's APIs allowing you to leverage browser technology to its fullest, Node JS's modules, and supports including third party modules too.
+
+## Who's Using Electron?
+Although Electron is entirely open source, its most definitely used for a lot of production grade applications by developers around the world. Slack, the Atom Text Editor, Nylas's N1 Mail Client, WordPress.com's Desktop App, and Microsoft's Visual Studio Code are all excellent examples of large complex applications built using Electron. [Additional examples](https://electron.atom.io/apps/)
+
