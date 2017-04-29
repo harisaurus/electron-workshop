@@ -57,10 +57,90 @@ gif-app/
 
 The `package.json` file will include a few simple items to get the ball moving.
 
-```
+```json
 {
   "name"    : "your-app",
   "version" : "0.1.0",
   "main"    : "main.js"
 }
+```
+
+The script specified for the `main` field is our startup script. If no value is present, Electron will attempt to load `index.js`.
+
+The first package required to get going is the Electron package itself. `npm install electron --save-dev` will install the Electron package as a development dependency.
+
+## Our First App
+### Startup Script
+Start the `main.js` file by importing a few basic utilities from Electron along with a few other dependencies.
+
+```js
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
+const url = require('url');
+```
+
+Next, we need to write a function that creates a new `BrowserWindow` instance. We can pass in some options to specify the size of the window created. We also want this window instance to load the `index.html` file that's in the project directory.
+
+```js
+let win;
+// a global reference to our windows. this can be a single window or an array of windows.
+
+function createWindow() {
+ win = new BrowserWindow({
+    width: 800,
+    height: 500
+  });
+  
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+}
+```
+
+We then tell Electron to run this `createWindow` when the application's state is ready to execute commands. Think of this as jQuery's `.ready`.
+
+```js
+app.on('ready', createWindow);
+```
+
+To properly handle closing of windows, we need to set our window `win` variable back to null in the `createWindow()` function. Our function should now look like this:
+
+```js
+function createWindow() {
+  win = new BrowserWindow({
+    width: 800,
+    height: 500
+  });
+
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }));
+
+  win.on('closed', () => {
+    win = null;
+  });
+}
+```
+
+### HTML Scaffold
+
+Add a tiny bit of basic markup in the `index.html` file. The following code will do for now.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIF!</title>
+    <link rel="stylesheet" href="app.css">
+  </head>
+  <body>
+    <h1>hello world!</h1>
+  </body>
+</html>
 ```
