@@ -59,7 +59,7 @@ The `package.json` file will include a few simple items to get the ball moving.
 
 ```json
 {
-  "name"    : "your-app",
+  "name"    : "the-app",
   "version" : "0.1.0",
   "main"    : "main.js"
 }
@@ -105,9 +105,15 @@ We then tell Electron to run this `createWindow` when the application's state is
 app.on('ready', createWindow);
 ```
 
-To properly handle closing of windows, we need to set our window `win` variable back to null in the `createWindow()` function. Our function should now look like this:
+To properly handle closing of windows, we need to set our window `win` variable back to null in the `createWindow()` function. The `main.js` file should now look as follows:
 
 ```js
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
+const url = require('url');
+
+let win;
+
 function createWindow() {
   win = new BrowserWindow({
     width: 800,
@@ -124,6 +130,8 @@ function createWindow() {
     win = null;
   });
 }
+
+app.on('ready', createWindow);
 ```
 
 ### HTML Scaffold
@@ -144,3 +152,35 @@ Add a tiny bit of basic markup in the `index.html` file. The following code will
   </body>
 </html>
 ```
+
+### Run It!
+
+To run an Electron app, call Electron along with the path to our app. We didn't install the Electron package globally, as we can utilize the version sitting in our `node_modules` folder. 
+
+```bash
+# OS X
+./node_modules/.bin/electron .
+
+# Windows
+.\node_modules\.bin\electron .
+```
+
+Where `.` represents the current folder directory (our app).
+
+Success! Let's add an npm script to our `package.json` file to handle running our Electron app.
+
+```json
+{
+  "name": "the-app",
+  "version": "0.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "./node_modules/.bin/electron ."
+  },
+  "devDependencies": {
+    "electron": "^1.6.6"
+  }
+}
+```
+
+Onwards!
