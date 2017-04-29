@@ -426,11 +426,12 @@ Firstly, create a `Tray` variable and require it from the `electron` package.
 const {app, BrowserWindow, Tray} = require('electron');
 ```
 
-Then, build out a new function that initializes a new Tray instance. A `Tray` instance requires a path to the icon we wish to use. 
+Then, build out a new function that initializes a new Tray instance. A `Tray` instance requires a path to the icon we wish to use. We need to make sure that appIcon is declared outside of the makeTray function, otherwise our icon will get garbage collected by JavaScript and disappear from our tray!
 
 ```js
+let appIcon;
 function makeTray() {
-  let appIcon = new Tray('./app-icon.png');
+  appIcon = new Tray('./app-icon.png');
   appIcon.setToolTip('Electron.js App');
 }
 ```
@@ -454,8 +455,8 @@ appIcon.on('click', function() {
 Our function should look like this:
 
 ```js
+let appIcon;
 function makeTray() {
-  let appIcon;
   appIcon = new Tray('./app-icon.png');
   appIcon.setToolTip('Electron.js App');
   appIcon.on('click', function() {
