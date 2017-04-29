@@ -272,7 +272,6 @@ function buildList(data) {
   return data.map((gif) => {
     return `<button data-url="${gif.images.original.url}" class="gif-item">
         <img class="gif-image" src="${gif.images.original.url}">
-        <span class="gif-favourite">F</span>
       </button>`;
   }).join('');
 }
@@ -435,3 +434,49 @@ win = new BrowserWindow({
   backgroundColor: "#000"
 });
 ```
+
+## Packaging
+### A Basic Package
+Packaging an Electron application allows us to create an executable file for users. We accomplish this by first including the  `electron-packager` npm package.
+
+```js
+npm install electron-packager --save-dev
+```
+
+Similar to running the application, we'll add a new npm script to use `electron-package` to package the application.
+
+```json
+"build": "electron-packager . GIFApp
+```
+
+Note: `GIFApp` is the name you decide for the packaged application.
+
+### Application Icon
+You'll notice that the icon representing our running application is the Electron logo. Right click the packaged application and select `Show Package Contents` and navigate to `Contents>Resources`. Here you'll see the `.icns` file that the application uses.
+
+At build time, we need to copy our own `.icns` file in the above mentioned folder to use a different icon. The `build` script should now look as follows:
+
+```json
+"build": "electron-packager . GIFApp && cp Icon.icns GIFApp-darwin-x64/GIFApp.app/Contents/Resources/electron.icns"
+```
+
+Note: This snippet shows the required path for OS X. Windows users will have a slightly different path, but the concept should remain the same.
+
+Making to first delete the previously built package (`rm -rf [foldername]`) running the build script again gives us a packaged application with the correct icon in use!
+
+### Archiving Sensitive Files
+You may have noticed that the `Contents/Resources/app` folder essentially gives a user full access to the application's files and functionality. Another node package by the name of `asar` helps address this issue by creating an archive of the `app` folder.
+
+Once again, we first need to bring in this new dependency.
+
+```js
+npm install asar --save-dev
+```
+
+Then, add a new npm script to update a built app's packaging.
+
+```json
+"package": "asar pack GIFApp-darwin-x64/GIFApp.app/Contents/Resources/app GIFApp-darwin-x64/GIFApp.app/Contents/Resources/app.asar"
+```
+
+Running the `package` script after the `build` script should create an unaccessible archive of the app itself, allowing us to delete the `app` folder from `Contents/Resources`. 
