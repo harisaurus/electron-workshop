@@ -347,3 +347,91 @@ clipboard.writeText(e.target.src);
 ```
 
 Give it a shot! Hashtag Magical.
+
+## Adding in Search
+As hilarious as the current GIFs are, our application will be far more useful if we can serach for particular queries. Let's update the markup to add a text input with some corresponding styles.
+
+```html
+<input type="text" id="gif-search" placeholder="search...">
+```
+
+```css
+#gif-search {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  background: none;
+  border: 0;
+  color: white;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.1s ease-in-out;
+}
+
+#gif-search:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 1);
+}
+```
+
+Great! Now lets add some functionality to this input field. An event listener on the `gif-search` element looking for the `keyup` event will allow us to continuously run new giphy API queries.
+
+```js
+document.getElementById('gif-search').addEventListener('keyup', (e) => {
+  giphy.search({
+    q: e.target.value
+  }).then(function (res) {
+    updateGIFList(res.data);
+  });
+});
+```
+
+This isn't super smart as the `keyup` event fires when we use shortcuts to select text, etc, so lets add in some checking to only make the API calls if and when the query is different from the last `keyup` event.
+
+```js
+let currentSearch = '';
+document.getElementById('gif-search').addEventListener('keyup', (e) => {
+  if ((e.target.value !== currentSearch) && e.target.value !== '') {
+    giphy.search({
+      q: e.target.value
+    }).then(function (res) {
+      currentSearch = e.target.value;
+      updateGIFList(res.data);
+    });
+  } else if (e.target.value === '') {
+    giphy.trending().then((res) => {
+      updateGIFList(res.data);
+    });
+    currentSearch = e.target.value;
+  }
+});
+```
+
+## Application Polish
+### GIF Listing Janky-ness
+The application looks a little choppy, but a tiny bit of CSS animations can address some of the flickering/janky issues when updating the GIF listing.
+
+```css
+.gif-item {
+  ...
+  -webkit-animation: fadein 0.5s;
+  animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+```
+
+### Application Load Flicker
+The application initially loads a white browser shell followed by the HTML and CSS loading up. This causes a brief white flicker when first loading the application. This can be avoided by providing a `backgroundColor` value when initializing the `BrowserWindow`.
+
+```js
+win = new BrowserWindow({
+  width: 800,
+  height: 500,
+  backgroundColor: "#000"
+});
+```
