@@ -186,6 +186,7 @@ A core feature in Electron is its ability to run two or more operating system le
 ### What is a process?
 A process is an instance of a computer program being executed. If we run an Electron application and check the Activity Monitor in MacOS we'd see the following
 ![Activity Monitor](https://cdn-images-1.medium.com/max/800/1*VAlIY8iCR_Tb78lMQrIz2w.png)
+
 The 'Electron' process is the main process, one of the helpers is a GPU process, and the remaining helpers are various renderer processes.
 
 The main thing to remember here is that they run concurrently and completely isolated from one another. This is extremely valuable as it keeps any issues/errors isolated from the other renderer instances preventing the entire app from crashing if one particular renderer instance falls apart. 
@@ -231,12 +232,3 @@ Thanks to the awesomesness of developer culture, someone also created a JavaScri
 ```bash
 npm install giphy-api --save
 ```
-
-
-## Devtools
-
-## NO BROWSER SUPPORT!
-
-https://medium.com/@ccnokes/deep-dive-into-electrons-main-and-renderer-processes-7a9599d5c9e2
-So where do I do CPU intensive work?
-I used to think the main process is the ideal place for “heavy lifting” because it wouldn’t block the UI. That’s wrong actually — if you do CPU intensive work in the main process, it’ll lock up all your renderer processes (and give you the infamous beachball on macOS). So CPU intensive tasks should run in a separate process — not an existing renderer with a UI in it (because it’ll lock that UI up) and not the main. The easiest way to do this is with Electron-remote. Electron-remote is pretty awesome and has a renderer process task pool that will split and balance a job across multiple processes.
