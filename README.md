@@ -548,6 +548,8 @@ Similar to running the application, we'll add a new npm script to use `electron-
 
 Note: `GIFApp` is the name you decide for the packaged application.
 
+The `electron-packager` will by default produce a package for your current platform and architecture type. For example, on macOS it produces a package for the 'darwin' platform for the '64bit' architecture type. You can use the `--all` flag to build bundles for all valid combinations for platforms and architectures.
+
 ### Application Icon
 You'll notice that the icon representing our running application is the Electron logo. Right click the packaged application and select `Show Package Contents` and navigate to `Contents>Resources`. Here you'll see the `.icns` file that the application uses.
 
@@ -577,3 +579,16 @@ Then, add a new npm script to update a built app's packaging.
 ```
 
 Running the `package` script after the `build` script should create an unaccessible archive of the app itself, allowing us to delete the `app` folder from `Contents/Resources`. 
+
+## TODO
+There's a wide range of improvements we could make to our application. A list of a few of those are as follows
+
+ - **Favourites**: Leveraging Local Storage could allow a user to 'favourite' their most used/liked GIFs for future reuse in a dedicated separate listing.
+ - **Positioning**: Our application currently doesn't have properly defined positioning. Using packages such as [electron-positioner](https://github.com/jenslind/electron-positioner) would allow us to ensure our application opens up centered perfectly underneath the tray icon on macOS and centered perfectly above the tray section on Windows/Linux.
+
+## Wrapping Up
+I'd recommend installing the `Electron API Demos` app from the Electron website that further explains the various APIs Electron has to offer. 
+
+Electron is still quite a young framework and has incredibly huge potential, and I'm incredibly excited to see where and how it continues to progress.
+
+I hope this workshop has been valuable, educational and most of all, motivational to get you building some super cool cross platform desktop applications!
