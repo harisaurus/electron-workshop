@@ -456,7 +456,7 @@ Our function should look like this:
 ```js
 function makeTray() {
   let appIcon;
-  appIcon = new Tray('./app-icon.png');
+  appIcon = new Tray(path.join(__dirname,'/tray-icon.png'));
   appIcon.setToolTip('Electron.js App');
   appIcon.on('click', function() {
     if (!win) {
