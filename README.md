@@ -4,7 +4,7 @@
 Hello and welcome to the Desktop Apps Workshop!
 
 ### Native Desktop Applications
-Developing native desktop applications is quite challenging. Packaging, installation, and update management are huge points of frustration that deter many developers from pursing desktop apps. Each operating system also requires its own specific language to be used to develop native apps, which further adds to the build complexity, build time, and the managing of multiple os-specific applications that at the end of the day are supposed to be the *same app*. Traditional developers would not only need to learn additional programming languages to build desktop applications for Windows, OSX and Linux, but also dive into each OS's APIs, patterns, file structures and requirements. 
+Developing native desktop applications is quite challenging. Packaging, installation, and update management are huge points of frustration that deter many developers from pursing desktop apps. Each operating system also requires its own specific language to be used to develop native apps, which further adds to the build complexity, build time, and the managing of multiple os-specific applications that at the end of the day are supposed to be the *same app*. Traditional developers would not only need to learn additional programming languages to build desktop applications for Windows, OSX and Linux, but also dive into each OS's APIs, patterns, file structures and requirements.
 
 Desktop applications do have multiple advantages over their web counterparts. Native features like notifications and menus can be leveraged along with building browser-independent experiences that can further add to your user's experience.
 
@@ -31,3 +31,36 @@ Electron includes Chromium's APIs allowing you to leverage browser technology to
 ## Who's Using Electron?
 Although Electron is entirely open source, its most definitely used for a lot of production grade applications by developers around the world. Slack, the Atom Text Editor, Nylas's N1 Mail Client, WordPress.com's Desktop App, and Microsoft's Visual Studio Code are all excellent examples of large complex applications built using Electron. [Additional examples](https://electron.atom.io/apps/)
 
+## Requirements
+### OS Requirements
+- Windows
+  - Windows 7 or later. Older Windows versions are not supported and will not work.
+  - x86 and x64 binaries are provided for Windows.
+- Mac
+  - OS X 10.9 or later. Older OS X versions are not supported and will not work.
+  - Only 64bit binaries are provided.
+- Linux
+  - Ubuntu 12.04 is the most stable and guaranteed to work.
+  - Versions later than Ubuntu 12.04, Fedora 21, or Debian 8 are verified but not guaranteed.
+
+### Software/Tooling Requirements
+- Node.js - A JavaScript runtime built on Chrome's V8 engine. Node.js also provides a massive package ecosystem, npm, which we will be leveraging to bring in third party libraries.
+
+## Project Setup
+A standard Electron app begins with a structure as follows:
+```
+gif-app/
+├── package.json
+├── main.js
+└── index.html
+```
+
+The `package.json` file will include a few simple items to get the ball moving.
+
+```
+{
+  "name"    : "your-app",
+  "version" : "0.1.0",
+  "main"    : "main.js"
+}
+```
