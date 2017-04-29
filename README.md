@@ -142,10 +142,7 @@ Add a tiny bit of basic markup in the `index.html` file. The following code will
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GIF!</title>
-    <link rel="stylesheet" href="app.css">
   </head>
   <body>
     <h1>hello world!</h1>
@@ -183,4 +180,63 @@ Success! Let's add an npm script to our `package.json` file to handle running ou
 }
 ```
 
-Onwards!
+## The Main and Renderer Process
+A core feature in Electron is its ability to run two or more operating system level processes concurrently. These are referred to as the 'main' and 'renderer' processes. 
+
+### What is a process?
+A process is an instance of a computer program being executed. If we run an Electron application and check the Activity Monitor in MacOS we'd see the following
+![Activity Monitor](https://cdn-images-1.medium.com/max/800/1*VAlIY8iCR_Tb78lMQrIz2w.png)
+The 'Electron' process is the main process, one of the helpers is a GPU process, and the remaining helpers are various renderer processes.
+
+The main thing to remember here is that they run concurrently and completely isolated from one another. This is extremely valuable as it keeps any issues/errors isolated from the other renderer instances preventing the entire app from crashing if one particular renderer instance falls apart. 
+
+Any low-level system related functionality should exist in the main process. Everything else goes in a (or many) renderer process(es). Keep the main process as light as possible to prevent constant "beach ball"-ing. 
+
+### Creating a Renderer
+A renderer is fairly straightforward to create. Its essentially a JavaScript file linked up to an HTML file that loads up into an Electron `BrowserWindow` instance.
+
+Let's create a `renderer.js` file in our folder and hook it up to our `index.html` file.
+
+```js
+// renderer.js
+console.log('Renderer Process');
+```
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>GIF!</title>
+  </head>
+  <body>
+    <h1>hello world</h1>
+  </body>
+
+  <script>
+    require('./renderer.js')
+  </script>
+</html>
+
+```
+
+## GIF App
+We'll continue building on top of our starter app. Our end goal is to create a desktop app that allows us to search through and shared GIFs. We'll be utilizing [GIPHY.com](https://giphy.com/)'s API service to request for GIFs that pertain to a particular search query. 
+
+### GIPHY
+![GIPHY Header](https://raw.githubusercontent.com/Giphy/GiphyAPI/master/api_giphy_header.gif)
+
+The [GIPHY API](https://github.com/Giphy/GiphyAPI) has a public beta key that we can use when developing applications. You'll need a production key if and when you decide to publish and distribute your app. [Request a public key details](https://github.com/Giphy/GiphyAPI#request-a-production-key).
+
+Thanks to the awesomesness of developer culture, someone also created a JavaScript module to help make API calls to GIPHY that supports promises and callbacks. This further simplifies our application's development. Let's install this npm package now. 
+```bash
+npm install giphy-api --save
+```
+
+
+## Devtools
+
+## NO BROWSER SUPPORT!
+
+https://medium.com/@ccnokes/deep-dive-into-electrons-main-and-renderer-processes-7a9599d5c9e2
+So where do I do CPU intensive work?
+I used to think the main process is the ideal place for “heavy lifting” because it wouldn’t block the UI. That’s wrong actually — if you do CPU intensive work in the main process, it’ll lock up all your renderer processes (and give you the infamous beachball on macOS). So CPU intensive tasks should run in a separate process — not an existing renderer with a UI in it (because it’ll lock that UI up) and not the main. The easiest way to do this is with Electron-remote. Electron-remote is pretty awesome and has a renderer process task pool that will split and balance a job across multiple processes.
