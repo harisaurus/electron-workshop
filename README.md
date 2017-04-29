@@ -221,8 +221,8 @@ console.log('Renderer Process');
 
 ```
 
-## GIF App
-We'll continue building on top of our starter app. Our end goal is to create a desktop app that allows us to search through and shared GIFs. We'll be utilizing [GIPHY.com](https://giphy.com/)'s API service to request for GIFs that pertain to a particular search query. 
+## Beginning the GIF App
+We'll continue building on top of our starter app. Our end goal is to create a desktop app that allows us to search through and share GIFs. We'll be utilizing [GIPHY.com](https://giphy.com/)'s API service to request for GIFs that pertain to a particular search query. 
 
 ### GIPHY
 ![GIPHY Header](https://raw.githubusercontent.com/Giphy/GiphyAPI/master/api_giphy_header.gif)
@@ -252,7 +252,7 @@ This creates a `giphy-api` instance using the development key. The same initiali
 const giphy = require('giphy-api')('API KEY HERE');
 ```
 
-Next, we make the GIPHY api call with testing data (I'll be using the query `pokemon`, and calling additional functions when the request returns data and resolves the promise.
+Next, we make the GIPHY api call with testing data (I'll be using the query `pokemon`), and calling additional functions when the request returns data and resolves the promise.
 
 ```js
 const gifContainer = document.getElementById('gif-list');
@@ -277,3 +277,73 @@ function buildList(data) {
   }).join('');
 }
 ```
+
+We'll also take this time to add a bit of CSS to the application. The following will suffice for the time being.
+
+```css
+body {
+  margin: 0;
+  padding: 0 10px;
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+}
+
+h1 {
+  margin: 0;
+  padding: 10px 15px;
+  font-size: 16px;
+}
+
+.gif-item {
+  display: block;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+}
+
+.gif-item ~ .gif-item {
+  margin-top: 10px;
+}
+
+.gif-image {
+  width: 100%;
+  display: block;
+}
+```
+
+## Working with Clipboards
+As users, we'd like to click on one of the GIFs and have the GIF's URL copy to our clipboard. Clipboard management is normally quite tedious when development web applications, or native applications, but Electron does all the heavy lifting for us. <3 you Electron.
+
+First, require clipboard from the `electron` package.
+
+```js
+const {clipboard} = require('electron');
+// or
+const clipboard = require('electron').clipboard;
+
+```
+
+Since the GIF list is built dynamically, we need to add event listeners to the gif container to listen for clicks on any `img` element.
+
+```js
+gifContainer.addEventListener('click', clickHandler, true);
+
+function clickHandler(e) {
+  if (e.target.classList.contains('gif-image')) {
+    console.log('click on a gif!');
+    console.log(e.target.src);
+  }
+}
+```
+
+And finally, we can use the `writeText` method on the `clipboard` instance to write the image's `src` value to the clipboard.
+
+```js
+clipboard.writeText(e.target.src);
+```
+
+Give it a shot! Hashtag Magical.
