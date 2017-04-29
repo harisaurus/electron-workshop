@@ -347,7 +347,7 @@ clipboard.writeText(e.target.src);
 
 Give it a shot! Hashtag Magical.
 
-## Let's Be Obnoxious
+## Let's Be Obnoxious - The Notifications API
 So, lets be a little crazy by utilizing Electron's notifications API to notify the user every time they copy a GIF to their clipboard. Because why the heck not.
 
 ```js
@@ -516,7 +516,21 @@ win = new BrowserWindow({
 ```
 
 ### Unique macOS  Closing
-On macOS, its common and very normal for applications and menu bars to stay active until a user explicitly quits the application through the menu bar, or with `Cmd + Q`.  Adding in some additional code in the main 
+On macOS, its common and very normal for applications and menu bars to stay active until a user explicitly quits the application through the menu bar, or with `Cmd + Q`.  Adding in some additional code in the main process will only quit the application on non-mac operating systems unless explicitly asked.
+
+```js
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (win === null) {
+    createWindow();
+  }
+});
+```
 
 ## Packaging
 ### A Basic Package
