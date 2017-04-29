@@ -37,7 +37,7 @@ Although Electron is entirely open source, its most definitely used for a lot of
   - Windows 7 or later. Older Windows versions are not supported and will not work.
   - x86 and x64 binaries are provided for Windows.
 - Mac
-  - OS X 10.9 or later. Older OS X versions are not supported and will not work.
+  - OS X 10.9 or later. Older macOS versions are not supported and will not work.
   - Only 64bit binaries are provided.
 - Linux
   - Ubuntu 12.04 is the most stable and guaranteed to work.
@@ -155,7 +155,7 @@ Add a tiny bit of basic markup in the `index.html` file. The following code will
 To run an Electron app, call Electron along with the path to our app. We didn't install the Electron package globally, as we can utilize the version sitting in our `node_modules` folder. 
 
 ```bash
-# OS X
+# macOS
 ./node_modules/.bin/electron .
 
 # Windows
@@ -347,6 +347,16 @@ clipboard.writeText(e.target.src);
 
 Give it a shot! Hashtag Magical.
 
+## Let's Be Obnoxious
+So, lets be a little crazy by utilizing Electron's notifications API to notify the user every time they copy a GIF to their clipboard. Because why the heck not.
+
+```js
+let notif = new window.Notification('GIF Copied!', {
+  body: `You copied a GIF!`,
+  silent: true
+});
+```
+
 ## Adding in Search
 As hilarious as the current GIFs are, our application will be far more useful if we can serach for particular queries. Let's update the markup to add a text input with some corresponding styles.
 
@@ -407,6 +417,65 @@ document.getElementById('gif-search').addEventListener('keyup', (e) => {
 });
 ```
 
+## Tray Icon
+Tray icons are a great way for users to quickly access their most used applications. Our GIF application is a great candidate for this use case, as we'll be GIF-ying it up all day.
+
+Firstly, create a `Tray` variable and require it from the `electron` package.
+
+```js
+const {app, BrowserWindow, Tray} = require('electron');
+```
+
+Then, build out a new function that initializes a new Tray instance. A `Tray` instance requires a path to the icon we wish to use. 
+
+```js
+function makeTray() {
+  let appIcon = new Tray('./app-icon.png');
+  appIcon.setToolTip('Electron.js App');
+}
+```
+
+We can then set the icon's tooltip text so a user always knows which application the icon is for.
+
+```js
+appIcon.setToolTip('GIF All The Things!');
+```
+
+Add a click handler to run `createWindow` if a window instance doesn't already exist.
+
+```js
+appIcon.on('click', function() {
+  if (!win) {
+    createWindow();
+  }
+});
+```
+
+Our function should look like this:
+
+```js
+function makeTray() {
+  let appIcon;
+  appIcon = new Tray('./app-icon.png');
+  appIcon.setToolTip('Electron.js App');
+  appIcon.on('click', function() {
+    if (!win) {
+      createWindow();
+    }
+  });
+}
+```
+
+And finally, update the application's `ready` callback to run `createWindow()` and our newly created `makeTray()`;
+
+```js
+app.on('ready', function() {
+  createWindow();
+  makeTray();
+});
+```
+
+
 ## Application Polish
 ### GIF Listing Janky-ness
 The application looks a little choppy, but a tiny bit of CSS animations can address some of the flickering/janky issues when updating the GIF listing.
@@ -435,6 +504,20 @@ win = new BrowserWindow({
 });
 ```
 
+### Prevent Resizing
+Simple applications such as ours normally don't allow a user to resize the application frame. Let's restrict resizing by setting the `resizable` flag when creating the `BrowserWindow` instance.
+
+```js
+win = new BrowserWindow({
+  ..
+  resizable: false,
+  ..
+});
+```
+
+### Unique macOS  Closing
+On macOS, its common and very normal for applications and menu bars to stay active until a user explicitly quits the application through the menu bar, or with `Cmd + Q`.  Adding in some additional code in the main 
+
 ## Packaging
 ### A Basic Package
 Packaging an Electron application allows us to create an executable file for users. We accomplish this by first including the  `electron-packager` npm package.
@@ -460,7 +543,7 @@ At build time, we need to copy our own `.icns` file in the above mentioned folde
 "build": "electron-packager . GIFApp && cp Icon.icns GIFApp-darwin-x64/GIFApp.app/Contents/Resources/electron.icns"
 ```
 
-Note: This snippet shows the required path for OS X. Windows users will have a slightly different path, but the concept should remain the same.
+Note: This snippet shows the required path for macOS. Windows users will have a slightly different path, but the concept should remain the same.
 
 Making to first delete the previously built package (`rm -rf [foldername]`) running the build script again gives us a packaged application with the correct icon in use!
 
