@@ -184,7 +184,8 @@ Success! Let's add an npm script to our `package.json` file to handle running ou
 A core feature in Electron is its ability to run two or more operating system level processes concurrently. These are referred to as the 'main' and 'renderer' processes. 
 
 ### What is a process?
-A process is an instance of a computer program being executed. If we run an Electron application and check the Activity Monitor in MacOS we'd see the following
+A process is an instance of a computer program being executed. If we run an Electron application and check the Activity Monitor in MacOS we'd see the following:
+
 ![Activity Monitor](https://cdn-images-1.medium.com/max/800/1*VAlIY8iCR_Tb78lMQrIz2w.png)
 
 The 'Electron' process is the main process, one of the helpers is a GPU process, and the remaining helpers are various renderer processes.
@@ -231,4 +232,48 @@ The [GIPHY API](https://github.com/Giphy/GiphyAPI) has a public beta key that we
 Thanks to the awesomesness of developer culture, someone also created a JavaScript module to help make API calls to GIPHY that supports promises and callbacks. This further simplifies our application's development. Let's install this npm package now. 
 ```bash
 npm install giphy-api --save
+```
+
+### Rendering GIFs
+To get a list of GIFs rendering in our application we need to create a wrapper in our HTML where we can dump our GIF list. 
+```html
+<div id="gif-list"></div>
+```
+
+In `renderer.js`, we first create a `giphy` variable and initialize a `giphy-api` instance.
+
+```js
+const giphy = require('giphy-api')();
+```
+
+This creates a `giphy-api` instance using the development key. The same initialization with a production key would look as follows:
+
+```js
+const giphy = require('giphy-api')('API KEY HERE');
+```
+
+Next, we make the GIPHY api call with testing data (I'll be using the query `pokemon`, and calling additional functions when the request returns data and resolves the promise.
+
+```js
+const gifContainer = document.getElementById('gif-list');
+
+giphy.search({
+  q: 'pokemon'
+}).then(function (res) {
+    // Res contains gif data!
+    updateGIFList(res.data);
+});
+
+function updateGIFList(data) {
+  gifContainer.innerHTML = buildList(data);
+}
+
+function buildList(data) {
+  return data.map((gif) => {
+    return `<button data-url="${gif.images.original.url}" class="gif-item">
+        <img class="gif-image" src="${gif.images.original.url}">
+        <span class="gif-favourite">F</span>
+      </button>`;
+  }).join('');
+}
 ```
